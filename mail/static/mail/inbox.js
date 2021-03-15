@@ -20,7 +20,7 @@ function send_new_mail() {
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
 
-  // perform basic validation before sending email
+  // perform basic validation before POST to prescreen simple errors
   var completeSend = true
   var msg = ""
   if (recipients.length === 0) { // improve with a regular expression
@@ -43,14 +43,20 @@ function send_new_mail() {
  
   // Send mail if valid
   if (completeSend) {
-    fetch('/emails',{
-      method: 'POST',
+    // send the data
+    fetch('/emails', {
+      method: 'POST', 
       body: JSON.stringify({
         recipients: recipients,
         subject: subject,
         body: body
       })
     })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    });
+
     load_mailbox('sent') 
   } else if (msg.length > 0 ){
     alert(msg)
