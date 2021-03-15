@@ -20,26 +20,43 @@ function send_new_mail() {
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
 
-  // validate if the inputs are valid or empty
-  // validate responce if email not availible
-
-  fetch('/emails',{
-    method: 'POST',
-    body: JSON.stringify({
-      recipients: recipients,
-      subject: subject,
-      body: body
+  // perform basic validation before sending email
+  var completeSend = true
+  var msg = ""
+  if (recipients.length === 0) { // improve with a regular expression
+      completeSend = false
+      msg = "Please add at least one recipient"
+  } else if (subject.length === 0) {
+      if (confirm('Send without a subject?')){
+        completeSend = true
+      } else {
+        completeSend = false
+      }
+  } else if (body.length === 0) {
+      if (confirm('Send a blank email?')){
+        completeSend = true
+      } else {
+        completeSend = false
+      }
+  }
+  console.log(`Complete Send: ${completeSend}`)
+ 
+  // Send mail if valid
+  if (completeSend) {
+    fetch('/emails',{
+      method: 'POST',
+      body: JSON.stringify({
+        recipients: recipients,
+        subject: subject,
+        body: body
+      })
     })
-  })
-  console.log('it worked!!')
-
-  load_mailbox('inbox') 
-  alert("Mail sent!");
-  // .then (response => response.json())
-  // .then (result => {
-  //   // Print result
-  //   console.log(result);
-  // })
+    load_mailbox('sent') 
+  } else if (msg.length > 0 ){
+    alert(msg)
+  } else {
+    alert("Something went wrong. Please try again")
+  }
 }
 
 function compose_email() {
