@@ -52,17 +52,26 @@ function send_new_mail() {
         body: body
       })
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        alert(`${"error message from response"}`)
+    }
+    else{
+      return response.json()
+    }
+    
+  }) 
     .then(data => {
       console.log(data);
-    });
+      load_mailbox('sent') ;
+    })
 
-    load_mailbox('sent') 
+ 
+
+    
   } else if (msg.length > 0 ){
     alert(msg)
-  } else {
-    alert("Something went wrong. Please try again")
-  }
+  } 
 }
 
 function compose_email() {
