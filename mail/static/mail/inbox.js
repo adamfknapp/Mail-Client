@@ -22,11 +22,7 @@ function send_new_mail() {
 
   // perform basic validation before POST to prescreen simple errors
   var completeSend = true
-  var msg = ""
-  if (recipients.length === 0) { // improve with a regular expression
-      completeSend = false
-      msg = "Please add at least one recipient"
-  } else if (subject.length === 0) {
+  if (subject.length === 0) {
       if (confirm('Send without a subject?')){
         completeSend = true
       } else {
@@ -43,7 +39,6 @@ function send_new_mail() {
  
   // Send mail if valid
   if (completeSend) {
-    // send the data
     fetch('/emails', {
       method: 'POST', 
       body: JSON.stringify({
@@ -52,25 +47,15 @@ function send_new_mail() {
         body: body
       })
     })
-    .then(response => {
-      if (!response.ok) {
-        alert(`${"error message from response"}`)
-    }
-    else{
-      return response.json()
-    }
-    
-  }) 
+    .then(response => response.json())
     .then(data => {
-      console.log(data);
-      load_mailbox('sent') ;
+      if (Object.keys(data) == 'error'){
+        alert(Object.values(data))
+      } else {
+        load_mailbox('sent')
+      }
     })
-
- 
-
-    
-  } else if (msg.length > 0 ){
-    alert(msg)
+    .catch(err => alert(err))
   } 
 }
 
