@@ -79,4 +79,30 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  //Get the data
+  fetch('/emails/inbox')
+  .then(response => response.json())
+  .then(emails=>{
+    //define the query for each mailbox
+    //--- Update to automatically pull in current user
+    const cur_user = 'darla@mydog.com'
+    const q_inbox = d => d.recipients === cur_user && d.archived === false;
+    const q_sent = d => d.archived === false;// d.sender === cur_user && d.archived === false;
+    const q_archived = d => d.recipients === cur_user && d.archived === true
+
+    var mail2View ={};
+    if (mailbox === 'sent'){
+        mail2View = emails.filter(q_sent)
+        
+    } else if (mailbox === 'inbox'){
+        mail2View = emails.filter(q_inbox)
+
+    } else if (mailbox ==='archive'){
+        mail2View = emails.filter(q_archived)
+    }
+ 
+    console.log(mail2View);
+    console.log(mailbox);
+  }) 
 }
