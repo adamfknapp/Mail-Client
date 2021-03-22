@@ -1,3 +1,31 @@
 textarea {
     min-height: 400px;
 }
+
+.email-entry {
+    border-bottom: 0.1em solid lightslategray;
+    cursor: pointer;
+    margin: .25em;
+    width: 100%;
+}
+
+.email-entry:hover{
+    background-color: lightskyblue;
+}
+
+.email-read {
+    background-color: lightgrey;; 
+}
+
+.email-sender{
+    color: black;
+}
+
+.email-subject{
+    padding-left: 3em;
+}
+
+.email-timestamp{
+    color: black;
+    float: right;
+}
