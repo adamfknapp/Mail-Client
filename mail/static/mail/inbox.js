@@ -123,30 +123,79 @@ function single_email_view(id){
   fetch(`emails/${id}`)
   .then(response => response.json())
   .then(email=>{
+    display_email(email)
     add_buttons(email)
+    update_flags(id);
   })
+}
+
+function update_flags(id){
+  fetch(`emails/${id}`,{
+    method: 'PUT',
+    body: JSON.stringify({
+      read: 1,
+    })
+  })
+}
+
+//const recipients = document.querySelector('#compose-recipients').value;
+// fetch('/emails', {
+//   method: 'POST', 
+//   body: JSON.stringify({
+//     recipients: recipients,
+//     subject: subject,
+//     body: body
+//   })
+// })
+
+function display_email(email){
+  document.querySelector('#single-email-view').innerHTML = 
+  `<strong>From</strong>: ${email.sender} 
+  </br> 
+  <strong>To</strong>: ${email.recipients}
+  </br>
+  <strong>Subject</strong>: ${email.subject}
+  </br>
+  <strong>Timestamp</strong>: ${email.timestamp}
+  </br>
+  <hr>
+  </br>
+  ${email.body}`;
 }
 
 function add_buttons(email) {
   //reply button
   const reply_button = document.createElement('button'); 
+  reply_button.id = 'reply-button';
   reply_button.innerHTML='Reply'; 
   reply_button.addEventListener('click', function() {
       console.log('Reply button clicked')
     });
 
-  //Archive or unarchive button
+  //inital state of Archive or unarchive button
   const archive_toggle = document.createElement('button'); 
+  archive_toggle.id = 'archive-toggle';
   if (email.archived === true){
     archive_toggle.innerHTML='Unarchive'
   } else {
     archive_toggle.innerHTML='Archive'
   } 
-  
-  archive_toggle.addEventListener('click', function() {
-      console.log('Archive/Unarchive button clicked')
-    });
 
+  //Append to screen
   document.querySelector('#single-email-view').append(reply_button);
   document.querySelector('#single-email-view').append(archive_toggle); 
+
+  archive_toggle.addEventListener('click', function() {
+
+      //update button text      
+      var archive_state = document.getElementById('archive-toggle').innerHTML;
+      if (archive_state==='Unarchive'){
+        new_state = 'Archive'
+      } else {
+        new_state = 'Unarchive'
+      }
+      document.getElementById('archive-toggle').innerHTML = new_state;
+    });
+
 }
+

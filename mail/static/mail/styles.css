@@ -1,3 +1,5 @@
+
+
 textarea {
     min-height: 400px;
 }
@@ -27,5 +29,14 @@ textarea {
 
 .email-timestamp{
     color: black;
+    float: right;
+}
+#reply-button{
+    margin-top: 2em;
+    float: left;
+}
+
+#archive-toggle{
+    margin-top: 2em;
     float: right;
 }
