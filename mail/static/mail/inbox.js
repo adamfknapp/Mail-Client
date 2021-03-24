@@ -46,7 +46,7 @@ function send_new_mail() {
       })
     })
     .then(response => response.json())
-    .then(data => {
+    .then(data => {     
       if (Object.keys(data) == 'error'){
         alert(Object.values(data))
       } else {
@@ -125,28 +125,36 @@ function single_email_view(id){
   .then(email=>{
     display_email(email)
     add_buttons(email)
-    update_flags(id);
+    update_tags(id, 'read');
   })
 }
 
-function update_flags(id){
+function update_tags(id, tag){
+  // This function will update the metadata tag
+  // associated with an email.
+
+  //determine the action to take
+  var action ={}
+  if (tag === 'read'){
+    action = 'read: true'
+  } else if (tag === 'archive'){
+    action = 'archived: true'
+  } else if (tag === 'unarchive') {
+    action = 'archived: false'
+  } else {
+    action = 'error'
+  }
+  console.log(`tag: ${tag} | Action: ${action}`)
+  console.log(JSON.stringify({
+    action
+    }))
   fetch(`emails/${id}`,{
     method: 'PUT',
     body: JSON.stringify({
-      read: 1,
-    })
-  })
-}
-
-//const recipients = document.querySelector('#compose-recipients').value;
-// fetch('/emails', {
-//   method: 'POST', 
-//   body: JSON.stringify({
-//     recipients: recipients,
-//     subject: subject,
-//     body: body
-//   })
-// })
+      action
+      })
+    })      
+  }
 
 function display_email(email){
   document.querySelector('#single-email-view').innerHTML = 
