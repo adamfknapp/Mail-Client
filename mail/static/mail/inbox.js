@@ -132,28 +132,23 @@ function single_email_view(id){
 function update_tags(id, tag){
   // This function will update the metadata tag
   // associated with an email.
-
-  //determine the action to take
-  var action ={}
+  var key = ''
+  var value = ''
   if (tag === 'read'){
-    action = 'read: true'
+    key = 'read'
+    value = true
   } else if (tag === 'archive'){
-    action = 'archived: true'
-  } else if (tag === 'unarchive') {
-    action = 'archived: false'
-  } else {
-    action = 'error'
-  }
-  console.log(`tag: ${tag} | Action: ${action}`)
-  console.log(JSON.stringify({
-    action
-    }))
-  fetch(`emails/${id}`,{
-    method: 'PUT',
-    body: JSON.stringify({
-      action
-      })
-    })      
+    key = 'archived'
+    value = true
+  } else if (tag === 'unarchive'){
+    key = 'archived'
+    value = false
+  } 
+
+  fetch(`emails/${id}`,   
+    {method: 'PUT',
+    body:  `{"${key}":${value}}`
+    }) 
   }
 
 function display_email(email){
@@ -199,8 +194,10 @@ function add_buttons(email) {
       var archive_state = document.getElementById('archive-toggle').innerHTML;
       if (archive_state==='Unarchive'){
         new_state = 'Archive'
+        update_tags(email.id, 'unarchive');
       } else {
         new_state = 'Unarchive'
+        update_tags(email.id, 'archive');
       }
       document.getElementById('archive-toggle').innerHTML = new_state;
     });
