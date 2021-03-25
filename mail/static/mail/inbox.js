@@ -72,7 +72,7 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
-  
+
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#single-email-view').style.display = 'none';
@@ -107,13 +107,15 @@ function add_email_to_view(email){
 
   //On email click
   row.addEventListener('click', function() {
-    single_email_view(email.id);  
+    // get the current mailbox name
+    const current_mailbox = document.querySelector('h3').innerHTML
+    single_email_view(email.id, current_mailbox);  
   });
 
   document.querySelector('#emails-view').append(row);
 }
 
-function single_email_view(id){
+function single_email_view(id, current_mailbox){
   // Show the single email view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#single-email-view').style.display = 'block';
@@ -124,7 +126,7 @@ function single_email_view(id){
   .then(response => response.json())
   .then(email=>{
     display_email(email)
-    add_buttons(email)
+    add_buttons(email, current_mailbox)
     update_tags(id, 'read');
   })
 }
@@ -166,7 +168,7 @@ function display_email(email){
   ${email.body}`;
 }
 
-function add_buttons(email) {
+function add_buttons(email, current_mailbox) {
   //reply button
   const reply_button = document.createElement('button'); 
   reply_button.id = 'reply-button';
@@ -176,6 +178,7 @@ function add_buttons(email) {
     });
 
   //inital state of Archive or unarchive button
+  console.log(current_mailbox)
   const archive_toggle = document.createElement('button'); 
   archive_toggle.id = 'archive-toggle';
   if (email.archived === true){
@@ -183,10 +186,13 @@ function add_buttons(email) {
   } else {
     archive_toggle.innerHTML='Archive'
   } 
+  
 
   //Append to screen
   document.querySelector('#single-email-view').append(reply_button);
-  document.querySelector('#single-email-view').append(archive_toggle); 
+  if (current_mailbox != 'Sent'){
+    document.querySelector('#single-email-view').append(archive_toggle);
+  } 
 
   archive_toggle.addEventListener('click', function() {
 
