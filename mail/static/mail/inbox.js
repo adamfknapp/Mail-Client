@@ -58,17 +58,25 @@ function send_new_mail() {
 }
 
 
-function compose_email() {
+function compose_email(email = null) {
+// add a default value for compose email and pass in email if reply
 
+console.log(email)
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#single-email-view').style.display = 'none'
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+    
+  if (email != null){
+    document.querySelector('#compose-recipients').value = '1';
+    document.querySelector('#compose-subject').value = '2';
+    document.querySelector('#compose-body').value = '3';
+  }
 }
 
 function load_mailbox(mailbox) {
@@ -187,15 +195,14 @@ function add_buttons(email, current_mailbox) {
     archive_toggle.innerHTML='Archive'
   } 
   
-
   //Append to screen
   document.querySelector('#single-email-view').append(reply_button);
   if (current_mailbox != 'Sent'){
     document.querySelector('#single-email-view').append(archive_toggle);
   } 
 
+  // Handle archive click
   archive_toggle.addEventListener('click', function() {
-
       //update button text      
       var archive_state = document.getElementById('archive-toggle').innerHTML;
       if (archive_state==='Unarchive'){
@@ -205,7 +212,15 @@ function add_buttons(email, current_mailbox) {
         new_state = 'Unarchive'
         update_tags(email.id, 'archive');
       }
-      document.getElementById('archive-toggle').innerHTML = new_state;
+      //load inbox
+      // NOT refershing the data acuratly
+      load_mailbox('inbox');
+    });
+
+    // Handle reply click
+    reply_button.addEventListener('click', function() {
+      //load compose
+      compose_email(email);
     });
 
 }
