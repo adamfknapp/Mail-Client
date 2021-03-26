@@ -58,26 +58,58 @@ function send_new_mail() {
 }
 
 
-function compose_email(email = null) {
-// add a default value for compose email and pass in email if reply
+function compose_email(email) {
+// code based on stack overflow at 
+// https://stackoverflow.com/questions/48653543/hasownproperty-with-more-than-one-property
+var props = ['recipients', 'subject', 'body', 'timestamp'];
+var hasAllProps = props.every(prop => email.hasOwnProperty(prop));
 
-console.log(email)
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#single-email-view').style.display = 'none'
   document.querySelector('#compose-view').style.display = 'block';
 
-    // Clear out composition fields
-    document.querySelector('#compose-recipients').value = '';
-    document.querySelector('#compose-subject').value = '';
-    document.querySelector('#compose-body').value = '';
-    
-  if (email != null){
-    document.querySelector('#compose-recipients').value = '1';
-    document.querySelector('#compose-subject').value = '2';
-    document.querySelector('#compose-body').value = '3';
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+
+  if (hasAllProps){
+    document.querySelector('#compose-recipients').value = email.sender;
+
+    //populate subject line
+    if( email.subject.includes('Re: ')){
+      var reply_subject = email.subject
+    } else {
+      var reply_subject = `Re: ${email.subject}`
+    }
+    document.querySelector('#compose-subject').value = reply_subject;
+
+    //populate body
+    document.querySelector('#compose-body').value = 
+`
+
+------------ 
+On ${email.timestamp}  ${email.sender} wrote:
+
+${email.body}`;
   }
 }
+
+// document.querySelector('#single-email-view').innerHTML = 
+// `<strong>From</strong>: ${email.sender} 
+// </br> 
+// <strong>To</strong>: ${email.recipients}
+// </br>
+// <strong>Subject</strong>: ${email.subject}
+// </br>
+// <strong>Timestamp</strong>: ${email.timestamp}
+// </br>
+// <hr>
+// </br>
+// ${email.body}`;
+
+
 
 function load_mailbox(mailbox) {
 
