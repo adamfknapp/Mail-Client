@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function send_new_mail() {
+  //
+  // handle sending an email
+  //
+
+
   const recipients = document.querySelector('#compose-recipients').value;
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
@@ -59,8 +64,10 @@ function send_new_mail() {
 
 
 function compose_email(email) {
-// code based on stack overflow at 
+//
+// handle compose email and reply some code based on
 // https://stackoverflow.com/questions/48653543/hasownproperty-with-more-than-one-property
+//
 var props = ['recipients', 'subject', 'body', 'timestamp'];
 var hasAllProps = props.every(prop => email.hasOwnProperty(prop));
 
@@ -96,24 +103,12 @@ ${email.body}`;
   }
 }
 
-// document.querySelector('#single-email-view').innerHTML = 
-// `<strong>From</strong>: ${email.sender} 
-// </br> 
-// <strong>To</strong>: ${email.recipients}
-// </br>
-// <strong>Subject</strong>: ${email.subject}
-// </br>
-// <strong>Timestamp</strong>: ${email.timestamp}
-// </br>
-// <hr>
-// </br>
-// ${email.body}`;
-
-
 
 function load_mailbox(mailbox) {
+  //
+  // show the mailbox
+  //
 
-  // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#single-email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
@@ -125,7 +120,6 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails=>{
-    console.log(emails)
     if (emails.length === 0) {
       document.querySelector('#emails-view').innerHTML += 'No email found.';
     }
@@ -134,7 +128,9 @@ function load_mailbox(mailbox) {
 }
 
 function add_email_to_view(email){
-
+  //
+  // Create a row to be added to view
+  //
   const row = document.createElement('div');
   row.classList.add('email-entry');
   
@@ -156,7 +152,9 @@ function add_email_to_view(email){
 }
 
 function single_email_view(id, current_mailbox){
+  //
   // Show the single email view and hide other views
+  //
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#single-email-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
@@ -172,8 +170,9 @@ function single_email_view(id, current_mailbox){
 }
 
 function update_tags(id, tag){
-  // This function will update the metadata tag
-  // associated with an email.
+  //
+  // update the metadata tags associated with an email.
+  //
   var key = ''
   var value = ''
   if (tag === 'read'){
@@ -213,12 +212,8 @@ function add_buttons(email, current_mailbox) {
   const reply_button = document.createElement('button'); 
   reply_button.id = 'reply-button';
   reply_button.innerHTML='Reply'; 
-  reply_button.addEventListener('click', function() {
-      console.log('Reply button clicked')
-    });
 
   //inital state of Archive or unarchive button
-  console.log(current_mailbox)
   const archive_toggle = document.createElement('button'); 
   archive_toggle.id = 'archive-toggle';
   if (email.archived === true){
@@ -244,16 +239,12 @@ function add_buttons(email, current_mailbox) {
         new_state = 'Unarchive'
         update_tags(email.id, 'archive');
       }
-      //load inbox
-      // NOT refershing the data acuratly
       load_mailbox('inbox');
     });
 
     // Handle reply click
     reply_button.addEventListener('click', function() {
-      //load compose
       compose_email(email);
     });
 
 }
-
